@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+#include "esp_log.h"
+#include "esp_timer.h"
+#include "esp_rom_sys.h"
+#include "HD44780.h" // Tu librería en C
+
+// Configuración LCD (Ajusta si tus pines son distintos)
+#define LCD_ADDR 0x27
+#define SDA_PIN  21
+#define SCL_PIN  22
+#define LCD_COLS 20
+#define LCD_ROWS 4
+
+// Configuración Sensor HC-SR04
+#define TRIG_PIN GPIO_NUM_5
+#define ECHO_PIN GPIO_NUM_18
+#define SOUND_SPEED 0.0343
+
+static const char* TAG = "ULTRASONICO_LCD";
+
+// --- Función para medir distancia ---
+float mediar_distancia() {
+    gpio_set_level(TRIG_PIN, 1);
+    esp_rom_delay_us(10);
+    gpio_set_level(TRIG_PIN, 0);
+
+    // Esperar inicio del pulso
+    uint32_t timeout = 100000;
+    while (gpio_get_level(ECHO_PIN) == 0 && timeout > 0) timeout--;
+    int64_t start = esp_timer_get_time();
+
+    // Esperar fin del pulso
+    timeout = 100000;
+    while (gpio_get_level(ECHO_PIN) == 1 && timeout > 0) timeout--;
+    int64_t end = esp_timer_get_time();
+
+    if (timeout == 0) return -1.0; 
+    return (float)(end - start) * SOUND_SPEED / 2.0;
+}
+
+// --- Tarea de la LCD ---
+void LCD_DemoTask(void* param) {
+    char txtBuf[20]; // Aumentado para seguridad
+    
+    // Configuración inicial fija
+    LCD_clearScreen();
+    LCD_setCursor(0, 0);
+    LCD_writeStr("--- MONITOR ESP32 ---");
+    LCD_setCursor(0, 2);
+    LCD_writeStr("Distancia:");
+
+    while (true) {
+        float dist = mediar_distancia();
+
+        LCD_setCursor(11, 2); // Posición después de "Distancia:"
+        
+        if (dist < 0 || dist > 400) {
+            LCD_writeStr("Error/Rango ");
+        } else {
+            // Usamos espacios al final para "limpiar" restos de cifras anteriores
+            sprintf(txtBuf, "%.2f cm    ", dist);
+            LCD_writeStr(txtBuf);
+        }
+
+        // Mostrar en consola para debug
+        ESP_LOGI(TAG, "Lectura: %.2f cm", dist);
+
+        vTaskDelay(pdMS_TO_TICKS(500)); // Actualización cada medio segundo
+    }
+}
+
+void app_main(void) {
+    // 1. Inicializar LCD
+    // Asegúrate de que tu LCD_init reciba estos parámetros en ese orden
+    LCD_init(LCD_ADDR, SDA_PIN, SCL_PIN, LCD_COLS, LCD_ROWS);
+
+    // 2. Inicializar GPIOs del Sensor
+    gpio_reset_pin(TRIG_PIN);
+    gpio_set_direction(TRIG_PIN, GPIO_MODE_OUTPUT);
+    gpio_reset_pin(ECHO_PIN);
+    gpio_set_direction(ECHO_PIN, GPIO_MODE_INPUT);
+    gpio_set_level(TRIG_PIN, 0);
+
+    // 3. Lanzar la tarea
+    xTaskCreate(&LCD_DemoTask, "LCD_Task", 4096, NULL, 5, NULL);
+}

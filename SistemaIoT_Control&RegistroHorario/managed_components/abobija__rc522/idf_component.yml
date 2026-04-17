@@ -1,0 +1,24 @@
+dependencies:
+  idf: ^5.0
+description: Library for communication with RFID / NFC cards using MFRC522 module
+files:
+  exclude:
+  - docs/**/*
+  - test/**/*
+license: Apache-2.0
+maintainers:
+- Alija Bobija <bobija.alija@gmail.com>
+repository: git://github.com/abobija/esp-idf-rc522.git
+repository_info:
+  commit_sha: 8693cd9d63275045a2303d6f3ac520fd0849ef73
+  path: .
+tags:
+- mfrc522
+- rfid
+- nfc
+- contactless
+- mifare
+- iso_1443
+- card
+url: https://github.com/abobija/esp-idf-rc522
+version: 3.4.3
