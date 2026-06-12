@@ -1,0 +1,108 @@
+#pragma once
+
+/*
+  Configuracion del sistema ESP32 MQTT JSON.
+
+  IMPORTANTE:
+  - La seccion de certificados fue copiada tal cual del codigo original ESP32mqtt.zip.
+  - No subir este archivo a repositorios publicos si contiene claves privadas reales.
+*/
+
+// Wi-Fi
+#define WIFI_SSID "Room"
+#define WIFI_PASSWORD "43200554"
+
+// MQTT / Mosquitto en Raspberry
+#define MQTT_HOST "192.168.137.198"
+#define MQTT_PORT 8883
+#define MQTT_TOPIC_UID "test/esp32"
+#define MQTT_TOPIC_ORDERS "esp32/ordenes"
+
+
+// El proyecto original usa MQTTS/TLS por el puerto 8883.
+#define USE_MQTTS 1
+
+// Certificados activos, igual que en el codigo original.
+#define TLS_INSECURE 0
+#define MQTT_USE_CLIENT_CERT 1
+
+// Si Mosquitto exige usuario y contrasena, poner MQTT_USE_AUTH en 1.
+#define MQTT_USE_AUTH 0
+#define MQTT_USERNAME ""
+#define MQTT_PASSWORD ""
+
+// Certificado CA (Formato Raw String Literal de C++)
+const char* ca_cert = "-----BEGIN CERTIFICATE-----\n"
+"MIIDpTCCAo2gAwIBAgIUWH8BeBhoV2qg93YBwhBEy2oF8BcwDQYJKoZIhvcNAQEL\n" 
+"BQAwYjELMAkGA1UEBhMCQ08xEjAQBgNVBAgMCUFudGlvcXVpYTERMA8GA1UEBwwI\n" 
+"TWVkZWxsaW4xDTALBgNVBAoMBHVkZWExDDAKBgNVBAsMA2lvdDEPMA0GA1UEAwwG\n" 
+"Q0EtTEpTMB4XDTI2MDUyMjE0NDIwN1oXDTI3MDUyMjE0NDIwN1owYjELMAkGA1UE\n" 
+"BhMCQ08xEjAQBgNVBAgMCUFudGlvcXVpYTERMA8GA1UEBwwITWVkZWxsaW4xDTAL\n" 
+"BgNVBAoMBHVkZWExDDAKBgNVBAsMA2lvdDEPMA0GA1UEAwwGQ0EtTEpTMIIBIjAN\n" 
+"BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl3XxILyrj9Osr19HRvomIESx28t/\n" 
+"XA8FCJoLKkoT6BY6jqQMRxk7rakpY/9wje2e41lcCw0fZceHVjppvnimyCtUUD6p\n" 
+"UBxIteewvE12H2guGPr0p7JimUp3lBbUUkpfdIcTDX22MKiGr5F2ghMzBFhPDWEx\n" 
+"RR/yveacxHvB2m1gUDRnkhSvWKdPnAtgiF0Z2vfcu57GGLWKgMhUrEQCsM1oIAMy\n" 
+"bJmyG9vfpIjZSsDqriuUZRPKwIoPkPl3IjzYHcJGmrYl430zn1A8QxJ5AaLENGji\n" 
+"s2lPcWbiSpetZs6rvLKWjMsx9TN2IFGTIbGoTZDwGGuxnTTymc0S2+aIswIDAQAB\n" 
+"o1MwUTAdBgNVHQ4EFgQUcKlrLlADK+qtuVVA+sxpHlwZDWowHwYDVR0jBBgwFoAU\n" 
+"cKlrLlADK+qtuVVA+sxpHlwZDWowDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0B\n" 
+"AQsFAAOCAQEABgyITQ9PxbyCeO9twwKfRqLx3KcTkZFT3AgbjKOMfaHdtFLNdZND\n" 
+"CvHFmfPJ9p+3WKjzQNCL0r3ujAE2cSxzJ+P51dTre0qSDF/GGH2whKYGLX4Bo2ii\n" 
+"n6x8iXZ8H+Z8ShukRZ/VVda9wbetDuekSYhL2grFaJcfe6EdRhBbqzbChW7/Sqpx\n" 
+"yDTETJjk/8fi+PkZKmdOK95+v47xmjCzH7qPXmgfUtALlqeORis6cbyeC02w5PIW\n" 
+"IjUf768j0Ten/VhL2brZzxkLC7hLNzemloQm3NQjBBTkBDCfjG+UFNdLmQLU9VaJ\n" 
+"jTBzxrNAGzB+tNd2BuyGYvc/zuOFJQHxyA==\n" 
+"-----END CERTIFICATE-----\n";
+
+const char* client_cert ="-----BEGIN CERTIFICATE-----\n"
+"MIIDmjCCAoKgAwIBAgIUOoOpx+lUPBu6spedxE0RyWZelhswDQYJKoZIhvcNAQEL\n"
+"BQAwYjELMAkGA1UEBhMCQ08xEjAQBgNVBAgMCUFudGlvcXVpYTERMA8GA1UEBwwI\n"
+"TWVkZWxsaW4xDTALBgNVBAoMBHVkZWExDDAKBgNVBAsMA2lvdDEPMA0GA1UEAwwG\n"
+"Q0EtTEpTMB4XDTI2MDUyMjE0NDcxOFoXDTI3MDUyMjE0NDcxOFowaDELMAkGA1UE\n" 
+"BhMCQ08xEjAQBgNVBAgMCUFudGlvcXVpYTERMA8GA1UEBwwITWVkZWxsaW4xDTAL\n" 
+"BgNVBAoMBHVkZWExDDAKBgNVBAsMA2lvdDEVMBMGA1UEAwwMRVNQMzItQ2xpZW50\n" 
+"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArS2F0MxvuTy6LGA7CW3O\n" 
+"5JcgxUQ5VqW0T8WBK+j9RYnIxK1x0Kh57F8HozCWoJMwPKtTe6ZXvoVVVHWUz6Ks\n" 
+"uidF4TyNBVc4NapcnnfEjxD2FSs6Y78D2MtPD6Y1QqO7fPXJM0e9iUUJG41deEqV\n"
+"Ga4bYNAiE+lzBunjDp6bXSu+bogjzrwg4ITwyqjWVSQrk4+ELrXWe9dd1U9rT/JG\n"
+"p3U3uHgoP/mLJE7qBsWsKyMwlKOddrhthqDZqYecH6T2pg+uUpa+EBKrgIv6U7y3\n" 
+"PG1YmsCEei3+6xrUoasElv6apXC/20qd7NKujEwFAqmYySj87Kvl6wY5hSsuizqe\n" 
+"EwIDAQABo0IwQDAdBgNVHQ4EFgQUBzasqe60tanG0OCgo3sgIM01yh0wHwYDVR0j\n" 
+"BBgwFoAUcKlrLlADK+qtuVVA+sxpHlwZDWowDQYJKoZIhvcNAQELBQADggEBAH45\n" 
+"cdJW40HO5ElYKkJOXpRMorcc8z+AENJV+ZrgMIWIvTQk9zGR1AzMZgWNeVYKcrpL\n" 
+"/upWhZrGF5RJHm+jsol0UJN1kJsp43uNt0oeLlwODnD6UjYIqz1CXnbCLcgaD0q5\n" 
+"SzGl1Bbs4I/o4hffnOPNbtfgg4BP9OvtkgOnfpCQF1tEFJF8RtoyQnIxlIV5b10m\n" 
+"Tpw5FjW/tVwPuFo4lQT9vWqSBk4bb8sKDYR35vWas4Wp5Rmp9Hr0Q/4cHCnZJyPZ\n" 
+"zKyjGZv7D1BV07hHDhOabkQRZd/GC/ddRoVgOMkb88yQko5D9nmo++VVdVTqSyHD\n" 
+"7aDhjVjkCAf/GbtVE5Q=\n" 
+"-----END CERTIFICATE-----\n";
+
+const char* client_key= "-----BEGIN PRIVATE KEY-----\n"
+"MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCtLYXQzG+5PLos\n"
+"YDsJbc7klyDFRDlWpbRPxYEr6P1FicjErXHQqHnsXwejMJagkzA8q1N7ple+hVVU\n"
+"dZTPoqy6J0XhPI0FVzg1qlyed8SPEPYVKzpjvwPYy08PpjVCo7t89ckzR72JRQkb\n"
+"jV14SpUZrhtg0CIT6XMG6eMOnptdK75uiCPOvCDghPDKqNZVJCuTj4QutdZ7113V\n"
+"T2tP8kandTe4eCg/+YskTuoGxawrIzCUo512uG2GoNmph5wfpPamD65Slr4QEquA\n"
+"i/pTvLc8bViawIR6Lf7rGtShqwSW/pqlcL/bSp3s0q6MTAUCqZjJKPzsq+XrBjmF\n"
+"Ky6LOp4TAgMBAAECggEAI0UfuVhBstzS4AHTVEbIedbrxjFwahzCffKwLaS8nIKE\n"
+"4MWgZgpCFql+ETbunpKLoveTv52vxi46pEJ0RduQSTOBcG+YGwvZ91gUl/O1lRuz\n"
+"urj8od7/5hH2Lq4/r6xQHZGjYi3MxN3KDpH6hOrPthS3H78UCbEki7Zr14jnBJDz\n"
+"Vraa1o07eZP6VMXjdetNbJl70Cf8XSthoU5MDyHZObQYYldVEBpb8ES1gLzA2GLl\n"
+"r5CsfNeIyycIozc1Tui3YiGSflT5KHkPcAajhOgP5zYJIxxCHY5ubRvvfulQckgP\n"
+"tgAkViMDCGR4jOO9jfaq77KTNXu6hDL7lSQVapZuXQKBgQDsa+05Kfchi1Lmdxth\n"
+"Hz9sDOKAM13LUcHMuMRFqcBW9CV8yvnr1RAZIHyTVulMfM76I9ks8kXiv78ODYRf\n"
+"4+g4se5aMbWLJJtBZMBj7smUu/TASiU1S7GRTovqO59FBUF592reFjy86AXQJBwp\n"
+"Fcs3kx6Tj6ILrL9M4n3T8LPHrwKBgQC7hNhvKYeOEjiccQcF/dh8XGVo/RVia0pO\n"
+"GCSp0TxkVx5SYXzAXXV5mRgDUuH4/Zf7gw1u1EqxnyK0Bfa9QxKwm4fhMka3gnG6\n"
+"vPDkFxG/xP3PWRYJDgr2PJ/b2pNIqdQHPKBUNY4hPllBTzMtoGUvhO+STRxrG7wM\n"
+"hOqy5z+E3QKBgGpMFDqxbZW9aKaKQtsmC4PvPx9Y+QDjX3lGUajoq7vsxbYYJMot\n"
+"37EMdDZiyz5Cl2TMHWch/t32TFZrKWtbsxtalMoks3U+HjgGrqG/yQ6Ae4jBTX1q\n"
+"7QliAXJtIC0OMeQ+o+P6p5Bf2c09jxPB4r63/PVnjPomz1QoOV7DSHGtAoGBAIVy\n"
+"WdBqHpTFdNIoQZZK+zgtTOH1UbWTovKGjfjn9XF26hY4WF5RZFufzo32+ueGGRWd\n"
+"Qv7/RxS2qiyxHdG8nN1gIcfqTpcj1qnM8iVwIWp21yUrQdo5yyVHKYB9QVlxunlX\n"
+"9MVYw4f25e/rXAF5Zuj1UsSr6bBzsVS7dobQuMxlAoGBAJkVu8ogpQ1NYWh9fMHA\n"
+"oJblYKwhBakNiIql98dR/rQjItDla/pfi0wCauvBFsD9Gin0Lkdipq9xzlEy+WYM\n"
+"UZNo5Ar40Ff9BKRoyyGSvQ8+9D5GY2XP3hThjZTkf7M7Hwe6dXQuGqsO/UVk6UDd\n"
+"pGjlHaG1N0ZPPs9uB0GAMvEb\n"
+"-----END PRIVATE KEY-----\n";
